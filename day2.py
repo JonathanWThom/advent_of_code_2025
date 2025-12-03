@@ -12,23 +12,25 @@
 
 def is_invalid(i):
     length = len(str(i))
-    if length % 2 != 0:
+    if int_is_odd(i):
         return False
 
     half = int(length / 2)
 
-    # print(str(i))
-    # print(str(i)[half:])
-    # print(str(i)[:half])
     return str(i)[half:] == str(i)[:half]
+
+def int_is_odd(i):
+    return len(str(i)) % 2 != 0
 
 counter = 0
 ranges = open("./day2_input.txt").read().replace("\n", "").split(",")
-# some of these can be ruled out earlier if they only contain odd lengths
 for rang in ranges:
     start_and_finish = rang.split("-")
     start = int(start_and_finish[0])
     finish = int(start_and_finish[1])
+    if int_is_odd(start) & int_is_odd(finish):
+        next
+
     for i in range(start, finish+1):
         if is_invalid(i):
             counter += i
