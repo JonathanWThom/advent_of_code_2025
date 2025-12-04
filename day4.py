@@ -14,7 +14,7 @@ class Grid:
 
         return squares
 
-    def get_accessible_squares(self):
+    def _get_accessible_squares(self):
         accessible = 0
         for square in self.squares:
             if not square.is_roll():
@@ -27,12 +27,22 @@ class Grid:
         print(accessible)
         return accessible
 
-    def update_squares(self):
+    def _update_squares(self):
         for square in self.squares:
             if square.removeable:
                 square.removeable = False
                 square.value = "."
                 self.lookup[square.x, square.y] = square
+
+    def count_all_removeable_rolls(self):
+        count = 0
+        accessible = 1
+        while accessible > 0:
+            accessible = grid._get_accessible_squares()
+            count += accessible
+            self._update_squares()
+
+        print(count)
 
 class Square:
     def __init__(self, value, x, y):
@@ -69,11 +79,4 @@ class Square:
 
 lines = open("./day4_input.txt").read().split("\n")[:-1]
 grid = Grid(lines)
-count = 0
-accessible = 1
-while accessible > 0:
-    accessible = grid.get_accessible_squares()
-    count += accessible
-    grid.update_squares()
-
-print(count)
+grid.count_all_removeable_rolls()
