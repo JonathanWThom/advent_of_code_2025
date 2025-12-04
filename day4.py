@@ -21,19 +21,25 @@ class Grid:
                 continue
             count = square.get_roll_neighbors_count(self.lookup)
             if count < 4:
+                square.removeable = True
                 accessible += 1
 
         print(accessible)
         return accessible
 
-
-
+    def update_squares(self):
+        for square in self.squares:
+            if square.removeable:
+                square.removeable = False
+                square.value = "."
+                self.lookup[square.x, square.y] = square
 
 class Square:
     def __init__(self, value, x, y):
         self.x = x
         self.y = y
         self.value = value
+        self.removeable = False
 
     def is_roll(self):
         return self.value == "@"
@@ -62,4 +68,12 @@ class Square:
         return count
 
 lines = open("./day4_input.txt").read().split("\n")[:-1]
-Grid(lines).get_accessible_squares()
+grid = Grid(lines)
+count = 0
+accessible = 1
+while accessible > 0:
+    accessible = grid.get_accessible_squares()
+    count += accessible
+    grid.update_squares()
+
+print(count)
