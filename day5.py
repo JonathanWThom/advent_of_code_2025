@@ -14,3 +14,16 @@ for available in available_ingredients:
             break # Once it's been determined fresh, don't count it again
 
 print(fresh_count)
+
+# This would work for part 2, but isn't performant enough
+# ranges = []
+# for fresh_ingredient_line in fresh_ingredient_lines:
+    # raw_range = fresh_ingredient_line.split("-")
+    # start = int(raw_range[0])
+    # end = int(raw_range[1])+1
+    # ingredient_range = range(start, end)
+    # ranges.append(ingredient_range)
+
+# import itertools
+# count = len(set(itertools.chain(*ranges)))
+# print(count)
