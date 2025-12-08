@@ -16,12 +16,6 @@ class Circuit:
     def size(self):
         return len(self.lights)
 
-    def get_lights(self):
-        blah = []
-        for l in self.lights:
-            blah.append(l.coords())
-        return blah
-
 class Light:
     def __init__(self, x, y, z):
         self.x = int(x)
@@ -40,23 +34,16 @@ class Light:
             if light.coords() == self.coords():
                 continue
             val = math.dist(self.coords(), light.coords())
-            blah = [self, light]
-            blah.sort(key= lambda l: l.coords())
-            blah.append(val)
-            relationships.append(blah)
+            relationships.append([self, light, val])
 
         return relationships
 
     def connect(self, light, circuits):
-        if self.circuit == None and light.circuit == None:
+        if self.circuit == None:
             circuit = Circuit()
             circuits.append(circuit)
             circuit.add_light(self)
             circuit.add_light(light)
-            return
-
-        if self.circuit == None:
-            light.circuit.add_light(self)
             return
 
         self.circuit.add_light(light)
@@ -68,24 +55,16 @@ for line in lines:
     lights.append(light)
 
 relationships = []
-circuits = []
 for light in lights:
     relationships.append(light.get_relationships_with_distance(lights))
-    c = Circuit()
-    c.add_light(light)
 relationships = list(itertools.chain.from_iterable(relationships))
 
 relationships.sort(key= lambda relationship: relationship[2]) # distance
-for i, relationship in enumerate(relationships):
-    if i % 2 != 0:
-        continue
+circuits = []
+for relationship in relationships:
     relationship[0].connect(relationship[1], circuits)
-    print("circuits size", len(circuits))
-    print("\n")
-    if len(circuits) > 2:
-        f = circuits[0].size() * circuits[1].size() * circuits[2].size()
-        if f == 40:
-            breakpoint()
+
+print(len(circuits))
 
 circuits.sort(key=lambda circuit: circuit.size(), reverse=True)
 print(circuits[0].size() * circuits[1].size() * circuits[2].size())
