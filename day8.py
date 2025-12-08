@@ -1,6 +1,16 @@
 import math
 
 lines = open("./day8_input.txt").read().splitlines()
+class Circuit:
+    def __init__(self):
+        self.lights = []
+
+    def add_light(self, light):
+        if light in self.lights: # might need to check coords?
+            return
+
+        self.lights.append(light)
+
 class Light:
     def __init__(self, x, y, z):
         self.x = int(x)
@@ -8,6 +18,7 @@ class Light:
         self.z = int(z)
         self.closest_neighbor = None
         self.closest_neighbor_val = None
+        self.circuit = None
 
     def coords(self):
         return [self.x, self.y, self.z]
@@ -30,6 +41,19 @@ class Light:
                 self.closest_neighbor = light
                 self.closest_neighbor_val = val
 
+    def connect_to_closest_neighbor(self, circuits):
+        if self.circuit == None:
+            circuit = Circuit()
+            self.add_to_circuit(circuit)
+            circuits.append(circuit)
+            self.closest_neighbor.add_to_circuit(circuit)
+        else:
+            self.closest_neighbor.add_to_circuit(self.circuit)
+
+    def add_to_circuit(self, circuit):
+        self.circuit = circuit
+        circuit.add_light(self)
+
 lights = []
 for line in lines:
     x, y, z = line.split(",")
@@ -40,6 +64,8 @@ for light in lights:
     light.set_closest_neighbor(lights)
 
 lights.sort(key=lambda light: light.closest_neighbor_val)
-print(lights[0].coords())
+circuits = []
+for light in lights:
+    light.connect_to_closest_neighbor(circuits)
 
 
