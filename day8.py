@@ -17,6 +17,9 @@ class Light:
             if light.coords() == self.coords():
                 continue
 
+            if light.closest_neighbor != None and light.closest_neighbor.coords() == self.coords():
+                continue
+
             val = math.dist(light.coords(), self.coords())
             if self.closest_neighbor == None:
                 self.closest_neighbor = light
@@ -24,7 +27,6 @@ class Light:
                 continue
 
             if val < self.closest_neighbor_val:
-                print(self.closest_neighbor_val)
                 self.closest_neighbor = light
                 self.closest_neighbor_val = val
 
@@ -36,8 +38,8 @@ for line in lines:
 
 for light in lights:
     light.set_closest_neighbor(lights)
-    print(f"light {light.coords()} is closest with {light.closest_neighbor.coords()}")
 
-
+lights.sort(key=lambda light: light.closest_neighbor_val)
+print(lights[0].coords())
 
 
