@@ -1,0 +1,43 @@
+import math
+
+lines = open("./day8_input.txt").read().splitlines()
+class Light:
+    def __init__(self, x, y, z):
+        self.x = int(x)
+        self.y = int(y)
+        self.z = int(z)
+        self.closest_neighbor = None
+        self.closest_neighbor_val = None
+
+    def coords(self):
+        return [self.x, self.y, self.z]
+
+    def set_closest_neighbor(self, lights):
+        for light in lights:
+            if light.coords() == self.coords():
+                continue
+
+            val = math.dist(light.coords(), self.coords())
+            if self.closest_neighbor == None:
+                self.closest_neighbor = light
+                self.closest_neighbor_val = val
+                continue
+
+            if val < self.closest_neighbor_val:
+                print(self.closest_neighbor_val)
+                self.closest_neighbor = light
+                self.closest_neighbor_val = val
+
+lights = []
+for line in lines:
+    x, y, z = line.split(",")
+    light = Light(x, y, z)
+    lights.append(light)
+
+for light in lights:
+    light.set_closest_neighbor(lights)
+    print(f"light {light.coords()} is closest with {light.closest_neighbor.coords()}")
+
+
+
+
