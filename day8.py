@@ -1,4 +1,5 @@
 import math
+import itertools
 
 lines = open("./day8_input.txt").read().splitlines()
 class Circuit:
@@ -23,36 +24,15 @@ class Light:
     def coords(self):
         return [self.x, self.y, self.z]
 
-    def set_closest_neighbor(self, lights):
+    def get_relationships_with_distance(self, lights):
+        relationships = []
         for light in lights:
             if light.coords() == self.coords():
                 continue
+            val = math.dist(self.coords(), light.coords())
+            relationships.append([self, light, val])
 
-            if light.closest_neighbor != None and light.closest_neighbor.coords() == self.coords():
-                continue
-
-            val = math.dist(light.coords(), self.coords())
-            if self.closest_neighbor == None:
-                self.closest_neighbor = light
-                self.closest_neighbor_val = val
-                continue
-
-            if val < self.closest_neighbor_val:
-                self.closest_neighbor = light
-                self.closest_neighbor_val = val
-
-    def connect_to_closest_neighbor(self, circuits):
-        if self.circuit == None:
-            circuit = Circuit()
-            self.add_to_circuit(circuit)
-            circuits.append(circuit)
-            self.closest_neighbor.add_to_circuit(circuit)
-        else:
-            self.closest_neighbor.add_to_circuit(self.circuit)
-
-    def add_to_circuit(self, circuit):
-        self.circuit = circuit
-        circuit.add_light(self)
+        return relationships
 
 lights = []
 for line in lines:
@@ -60,12 +40,9 @@ for line in lines:
     light = Light(x, y, z)
     lights.append(light)
 
+relationships = []
 for light in lights:
-    light.set_closest_neighbor(lights)
+    relationships.append(light.get_relationships_with_distance(lights))
+relationships = list(itertools.chain.from_iterable(relationships))
 
-lights.sort(key=lambda light: light.closest_neighbor_val)
-circuits = []
-for light in lights:
-    light.connect_to_closest_neighbor(circuits)
-
-
+relationships.sort(key= lambda relationship: relationship[2]) # distance
