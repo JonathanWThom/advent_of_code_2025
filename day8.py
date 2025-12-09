@@ -75,7 +75,6 @@ class Light:
 lights = []
 for line in lines:
     x, y, z = line.split(",")
-    print(x, y, z)
     light = Light(x, y, z)
     lights.append(light)
 
@@ -93,17 +92,19 @@ for i, relationship in enumerate(relationships):
         continue
     deduped.append(relationship)
 
-for i, relationship in enumerate(deduped[:1000]):
-    print(f"{relationship[0].coords()} will merge with {relationship[1].coords()}")
+for i, relationship in enumerate(deduped):
+    # print(f"{relationship[0].coords()} will merge with {relationship[1].coords()}")
     relationship[0].connect(relationship[1], circuits)
-    print(f"{relationship[0].circuit == relationship[1].circuit}")
+    # print(f"{relationship[0].circuit == relationship[1].circuit}")
 
     for c in circuits:
-        for l in c.lights:
-            print(l.coords())
-        print("\n")
-    # if relationship[0].circuit != relationship[1].circuit:
-        # breakpoint()
+        if c.size() == 0:
+            circuits.remove(c)
 
-circuits.sort(key=lambda circuit: circuit.size(), reverse=True)
-print(circuits[0].size() * circuits[1].size() * circuits[2].size())
+    last_connection = [relationship[0].coords(), relationship[1].coords()]
+    if len(circuits) == 1 and circuits[0].size() == len(lines):
+        print(last_connection[0][0] * last_connection[1][0])
+        break
+
+# circuits.sort(key=lambda circuit: circuit.size(), reverse=True)
+# print(circuits[0].size() * circuits[1].size() * circuits[2].size())
