@@ -7,10 +7,21 @@ class Circuit:
         self.lights = []
 
     def add_light(self, light):
-        if light in self.lights: # might need to check coords?
+        if light in self.lights:
             return
 
+        if light.circuit != None:
+            # then merge the circuits
+            other_circuit = light.circuit
+            for l in other_circuit.lights:
+                l.circuit = self
+                self.lights.append(l)
+            other_circuit.lights = []
+
         light.circuit = self
+        if light in self.lights:
+            return
+
         self.lights.append(light)
 
     def size(self):
@@ -64,28 +75,35 @@ class Light:
 lights = []
 for line in lines:
     x, y, z = line.split(",")
+    print(x, y, z)
     light = Light(x, y, z)
     lights.append(light)
 
 relationships = []
-circuits = []
 for light in lights:
     relationships.append(light.get_relationships_with_distance(lights))
-    c = Circuit()
-    c.add_light(light)
-relationships = list(itertools.chain.from_iterable(relationships))
 
-relationships.sort(key= lambda relationship: relationship[2]) # distance
+relationships = list(itertools.chain.from_iterable(relationships))
+relationships.sort(key= lambda relationship: relationship[2])
+
+circuits = []
+deduped = []
 for i, relationship in enumerate(relationships):
     if i % 2 != 0:
         continue
+    deduped.append(relationship)
+
+for i, relationship in enumerate(deduped[:1000]):
+    print(f"{relationship[0].coords()} will merge with {relationship[1].coords()}")
     relationship[0].connect(relationship[1], circuits)
-    print("circuits size", len(circuits))
-    print("\n")
-    if len(circuits) > 2:
-        f = circuits[0].size() * circuits[1].size() * circuits[2].size()
-        if f == 40:
-            breakpoint()
+    print(f"{relationship[0].circuit == relationship[1].circuit}")
+
+    for c in circuits:
+        for l in c.lights:
+            print(l.coords())
+        print("\n")
+    # if relationship[0].circuit != relationship[1].circuit:
+        # breakpoint()
 
 circuits.sort(key=lambda circuit: circuit.size(), reverse=True)
 print(circuits[0].size() * circuits[1].size() * circuits[2].size())
