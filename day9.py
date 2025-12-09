@@ -60,7 +60,31 @@ class Floor:
                 print(f"tile at [{tile.x}, {y}] forms rectangle with [{tile.x}, {tile.y}] with area: {area}")
                 areas.append(area)
 
-        # all diagonals
+        # up right diagonally: wrong algo
+        for x in range(tile.x+1, self.width+1): # move to the right starting at tile until reaching end
+            current_y =
+            # for each move to the right, you have to subtract 1 from tile.y
+            if tile.x == 2 and tile.y == 5:
+                if x == 11:
+                    print("current_y", current_y)
+
+            if self.tiles.get(x, {}).get(current_y, Tile(-1,-1)).red == True:
+                x_move = abs(x-tile.x)+1
+                y_move = abs(curren_y-tile.y)+1
+                area = x_move * y_move
+                print(f"tile at [{x}, {current_y}] forms rectangle with [{tile.x}, {tile.y}] with area: {area}")
+                areas.append(area)
+
+        # down right diagonally: wrong algo
+        for x in range(tile.x, self.width+1): # move to the right starting at tile until reaching end
+            # for each move to the right, you have to add 1 to tile.y
+            current_y = tile.y + 1
+            if self.tiles.get(x, {}).get(current_y, Tile(-1,-1)).red == True:
+                x_move = abs(x-tile.x)+1
+                y_move = abs(curren_y-tile.y)+1
+                area = x_move * y_move
+                print(f"tile at [{x}, {current_y}] forms rectangle with [{tile.x}, {tile.y}] with area: {area}")
+                areas.append(area)
 
         return max(areas)
 
@@ -76,6 +100,7 @@ for tile in f.red_tiles:
 # [0,3] [1,3] [2,3] [3,3] [4,3]
 # [0,4] [1,4] [2,4] [3,4] [4,4]
 
+# NO this is the wrong idea, it doesn't follow these 1 up, 1 to the side rules
 # for [2,2], possible thin rectangles are
 # anything with same y value that are not it: [0,2] [1,2] [3,2] [4,2]
 # anything with same x value that is not it: [2,0] [2,1] [2,3] [2,4]
