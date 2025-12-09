@@ -14,7 +14,7 @@ class Tile:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.red = False
+        self.matches = []
 
 class Floor:
     def __init__(self, width, depth, lines):
@@ -25,15 +25,13 @@ class Floor:
 
     def _build_tiles(self, lines):
         tmp = dict()
-        for x in range(width+1):
-            tmp[x] = {}
-            for y in range(depth+1):
-                tmp[x][y] = Tile(x, y)
 
         for line in lines:
             x, y = line.split(",")
-            tile = tmp[int(x)][int(y)]
-            tile.red = True
+            tile = Tile(int(x), int(y))
+            if tmp.get(int(x)) == None:
+                tmp[int(x)] = {}
+            tmp[int(x)][int(y)] = tile
             self.red_tiles.append(tile)
 
         return tmp
@@ -41,13 +39,17 @@ class Floor:
     def get_best_rectangle_for(self, tile):
         areas = []
 
-        for red_tile in self.red_tiles:
+        for i, red_tile in enumerate(self.red_tiles):
             if red_tile == tile:
                 continue
+
             x_magnitude = abs(red_tile.x - tile.x)+1
             y_magnitude = abs(red_tile.y - tile.y)+1
             area = x_magnitude * y_magnitude
             areas.append(area)
+
+        if len(areas) == 0:
+            return 0
 
         return max(areas)
 
