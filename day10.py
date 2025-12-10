@@ -51,6 +51,7 @@ class Machine:
         if self.initial_diagram == self.goal_diagram:
             return 0
 
+
         target = [(self.goal_diagram[i] - self.initial_diagram[i]) % 2 for i in range(len(self.initial_diagram))]
         A = []
         for i in range(len(self.initial_diagram)):
@@ -58,7 +59,7 @@ class Machine:
             A.append(row)
 
         print(A)
-        # I need guassain elimination? or
+        # I need guassain elimination? or BFS???
         # https://math.libretexts.org/Bookshelves/Combinatorics_and_Discrete_Mathematics/Applied_Discrete_Structures_(Doerr_and_Levasseur)/12%3A_More_Matrix_Algebra/12.06%3A_Linear_Equations_over_the_Integers_Mod_2
         # ?
 
